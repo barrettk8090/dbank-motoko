@@ -8,8 +8,8 @@ import Debug "mo:base/Debug";
 //Let is a constant/immutable variable - cannot be changed
 
 actor DBank {
-  var currentValue = 300;
-  currentValue := 100;
+  stable var currentValue = 300;
+  // currentValue := 100;
 
   let id = 89758923475072348;
 
@@ -17,11 +17,24 @@ actor DBank {
   // Debug.print(debug_show (id));
 
   //Adding public allows us to use the function outside of the class
+  //Allow users to add funds
   public func topUp(amount : Nat) {
     currentValue += amount;
     Debug.print(debug_show (currentValue));
   };
 
-  // topUp();
+  //Allow users to withdraw funds
+  public func withdraw(amount : Nat) {
+    let tempValue : Int = currentValue - amount;
+    if (tempValue >= 0) {
+      currentValue -= amount;
+      Debug.print(debug_show (currentValue));
+    } else { (Debug.print("Insufficient funds - amount too large")) };
+  };
+
+  //Query - read-only operation, can quickly get the values of the variables
+  public query func checkBalance() : async Nat {
+    return currentValue;
+  };
 
 };
